@@ -7,13 +7,11 @@ import streamlit.components.v1 as components
 # Configurazione Pagina
 st.set_page_config(page_title="BREACH_2025", page_icon="💀", layout="centered")
 
-# --- CSS PER IL LOOK TERMINALE E PIOGGIA ---
+# --- CSS LOOK TERMINALE ---
 st.markdown("""
     <style>
     .stApp { background-color: #000000; overflow: hidden; }
-    
     header, footer, #MainMenu {visibility: hidden;}
-
     .log-text {
         color: #00FF41;
         font-family: 'Courier New', Courier, monospace;
@@ -22,7 +20,6 @@ st.markdown("""
         position: relative;
         z-index: 100;
     }
-
     .terminal-box {
         color: #00FF41;
         font-family: 'Courier New', Courier, monospace !important;
@@ -33,29 +30,18 @@ st.markdown("""
         background: rgba(0,0,0,0.9);
         position: relative;
         z-index: 100;
-        overflow: hidden;
     }
-
-    /* ANIMAZIONE CYBER-RAIN NATALIZIA */
     .matrix-rain {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 1;
+        top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none; z-index: 1;
     }
     .bit {
-        position: absolute;
-        top: -30px;
-        font-family: monospace;
-        font-size: 18px;
+        position: absolute; top: -30px;
+        font-family: monospace; font-size: 18px;
         animation: fall linear infinite;
     }
-    @keyframes fall {
-        to { transform: translateY(110vh); }
-    }
+    @keyframes fall { to { transform: translateY(110vh); } }
     </style>
     """, unsafe_allow_html=True)
 
@@ -66,24 +52,25 @@ def find_file(name):
                 return os.path.join(root, f)
     return None
 
-# Funzione per suonare audio in modo TOTALMENTE INVISIBILE
-def play_audio_hidden(file_path):
+# Funzione per preparare l'audio (restituisce la stringa Base64)
+def get_audio_b64(file_path):
     if file_path and os.path.exists(file_path):
         with open(file_path, "rb") as f:
-            data = f.read()
-            b64 = base64.b64encode(data).decode()
-            # Inietta un tag audio HTML5 con autoplay e senza controlli
-            audio_html = f"""
-                <audio autoplay="true" style="display:none;">
-                    <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
-                </audio>
-            """
-            components.html(audio_html, height=0, width=0)
+            return base64.b64encode(f.read()).decode()
+    return None
 
-# Genera la pioggia natalizia (CSS puro)
+def play_audio_b64(b64_string):
+    if b64_string:
+        audio_html = f"""
+            <audio autoplay="true" style="display:none;">
+                <source src="data:audio/mp3;base64,{b64_string}" type="audio/mp3">
+            </audio>
+        """
+        components.html(audio_html, height=0, width=0)
+
 def start_cyber_rain():
     import random
-    cols = 40 # Più densa
+    cols = 40
     html_bits = '<div class="matrix-rain">'
     for i in range(cols):
         left = i * 2.5
@@ -100,51 +87,60 @@ def main():
         st.session_state.authorized = False
 
     if not st.session_state.authorized:
-        st.markdown('<p class="log-text">ID: UNKNOWN_DEVICE<br>CONNECTION: DIAL-UP REQUIRED</p>', unsafe_allow_html=True)
-        if st.button("ESTABLISH CONNECTION (RUN EXPLOIT)"):
+        st.markdown('<p class="log-text">ID: UNKNOWN_DEVICE<br>DATE: 25-12-2025<br>STATUS: LOCKED</p>', unsafe_allow_html=True)
+        if st.button("RUN EXPLOIT"):
             st.session_state.authorized = True
             st.rerun()
     else:
-        # --- FASE 1: SUONO MODEM + LOG (26 SECONDI) ---
-        play_audio_hidden(find_file("modem.mp3"))
+        # 1. Carichiamo subito il Base64 del modem (veloce)
+        modem_b64 = get_audio_b64(find_file("modem.mp3"))
+        play_audio_b64(modem_b64)
 
         log_placeholder = st.empty()
         full_log = ""
+        
+        # Sequenza log (Totale circa 23 secondi di attesa "reale")
+        # Lasciamo gli ultimi 3 secondi per il calcolo della musica rock
         steps = [
             ("> Dialing 01010011...", 2.5),
             ("> Carrier detected...", 1.5),
             ("> Handshake: V.90 Protocol...", 6.0),
             ("> Bypassing IDS/IPS...", 4.5),
             ("> Escalating to root...", 3.5),
-            ("> Searching secret_payload...", 3.0),
-            ("> Decrypting visual data...", 5.0),
-        ] # Totale circa 26 secondi
+            ("> Accessing secret_payload...", 3.0),
+            ("> Initializing decryptor...", 2.0),
+        ]
 
         for text, delay in steps:
             full_log += text + "<br>"
             log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
             time.sleep(delay)
 
-        # --- FASE 2: MUSICA ROCK + MATRIX RAIN + IMMAGINE ---
+        # 2. Mentre il modem finisce di gracchiare (ultimi secondi), 
+        # facciamo il lavoro pesante di caricare la musica Rock
+        full_log += "> Decrypting large media buffer...<br>"
+        log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
         
-        # Audio Rock (sovrascrive il modem essendo un nuovo componente iniettato)
-        play_audio_hidden(find_file("musica.mp3"))
+        rock_b64 = get_audio_b64(find_file("musica.mp3")) # Qui avviene il "ritardo" calcolato
         
-        # Pioggia Digitale
+        full_log += "> SUCCESS. Executing payload...<br>"
+        log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
+        time.sleep(1)
+
+        # --- AZIONE FINALE ---
+        play_audio_b64(rock_b64)
         start_cyber_rain()
 
-        # ASCII ART
         ascii_art = r"""
  █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗██████╗ ██╗
 ██╔══██╗██║   ██║██╔════╝ ██║   ██║██╔══██╗██║
 ███████║██║   ██║██║  ███╗██║   ██║██████╔╝██║
 ██╔══██║██║   ██║██║   ██║██║   ██║██╔══██╗██║
 ██║  ██║╚██████╔╝╚██████╔╝╚██████╔╝██║  ██║██║
-╚═╝  ╚═╝ ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝
-        """
+╚═╝  ╚═╝ ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝"""
         st.markdown(f'<div class="terminal-box">{ascii_art}</div>', unsafe_allow_html=True)
         
-        st.success("BREACH SUCCESSFUL: Happy Hacking & Merry Christmas!")
+        st.success("BREACH SUCCESSFUL: Buon Natale!")
 
         img_path = find_file("foto.png")
         if img_path:
