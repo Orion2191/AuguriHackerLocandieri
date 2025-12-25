@@ -1,21 +1,18 @@
 import streamlit as st
 import time
 import os
+import base64
+import streamlit.components.v1 as components
 
 # Configurazione Pagina
 st.set_page_config(page_title="BREACH_2025", page_icon="💀", layout="centered")
 
-# --- CSS AGGRESSIVO ---
+# --- CSS PER IL LOOK TERMINALE E PIOGGIA ---
 st.markdown("""
     <style>
     .stApp { background-color: #000000; overflow: hidden; }
     
-    /* NASCONDE IL PLAYER AUDIO MA LO TIENE ATTIVO */
-    div[data-testid="stAudio"] {
-        position: fixed;
-        bottom: -100px;
-        opacity: 0;
-    }
+    header, footer, #MainMenu {visibility: hidden;}
 
     .log-text {
         color: #00FF41;
@@ -33,12 +30,11 @@ st.markdown("""
         white-space: pre !important;
         border: 1px solid #00FF41;
         padding: 15px;
-        background: rgba(0,0,0,0.8);
+        background: rgba(0,0,0,0.9);
         position: relative;
         z-index: 100;
+        overflow: hidden;
     }
-
-    header, footer, #MainMenu {visibility: hidden;}
 
     /* ANIMAZIONE CYBER-RAIN NATALIZIA */
     .matrix-rain {
@@ -50,17 +46,15 @@ st.markdown("""
         pointer-events: none;
         z-index: 1;
     }
-
     .bit {
         position: absolute;
-        top: -20px;
+        top: -30px;
         font-family: monospace;
-        font-size: 20px;
+        font-size: 18px;
         animation: fall linear infinite;
     }
-
     @keyframes fall {
-        to { transform: translateY(105vh); }
+        to { transform: translateY(110vh); }
     }
     </style>
     """, unsafe_allow_html=True)
@@ -72,17 +66,31 @@ def find_file(name):
                 return os.path.join(root, f)
     return None
 
-# Funzione per generare i bit che cadono (CSS puro)
+# Funzione per suonare audio in modo TOTALMENTE INVISIBILE
+def play_audio_hidden(file_path):
+    if file_path and os.path.exists(file_path):
+        with open(file_path, "rb") as f:
+            data = f.read()
+            b64 = base64.b64encode(data).decode()
+            # Inietta un tag audio HTML5 con autoplay e senza controlli
+            audio_html = f"""
+                <audio autoplay="true" style="display:none;">
+                    <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+                </audio>
+            """
+            components.html(audio_html, height=0, width=0)
+
+# Genera la pioggia natalizia (CSS puro)
 def start_cyber_rain():
     import random
-    cols = 20
+    cols = 40 # Più densa
     html_bits = '<div class="matrix-rain">'
     for i in range(cols):
-        left = i * 5
-        duration = random.uniform(2, 5)
-        delay = random.uniform(0, 5)
-        color = "#00FF41" if i % 2 == 0 else "#FF0000" # Alterna Verde e Rosso
-        char = random.choice(["0", "1"])
+        left = i * 2.5
+        duration = random.uniform(2, 6)
+        delay = random.uniform(0, 4)
+        color = "#00FF41" if i % 2 == 0 else "#FF0000"
+        char = random.choice(["0", "1", "X", "M", "A", "S"])
         html_bits += f'<div class="bit" style="left:{left}%; color:{color}; animation-duration:{duration}s; animation-delay:{delay}s;">{char}</div>'
     html_bits += '</div>'
     st.markdown(html_bits, unsafe_allow_html=True)
@@ -97,45 +105,33 @@ def main():
             st.session_state.authorized = True
             st.rerun()
     else:
-        # Placeholder per l'audio
-        audio_placeholder = st.empty()
-        
-        # --- PARTENZA MODEM ---
-        modem_path = find_file("modem.mp3")
-        if modem_path:
-            with open(modem_path, "rb") as f:
-                audio_placeholder.audio(f.read(), format="audio/mp3", autoplay=True)
+        # --- FASE 1: SUONO MODEM + LOG (26 SECONDI) ---
+        play_audio_hidden(find_file("modem.mp3"))
 
         log_placeholder = st.empty()
         full_log = ""
-        
-        # --- LOG SINCRONIZZATI (26 SECONDI TOTALI) ---
         steps = [
             ("> Dialing 01010011...", 2.5),
             ("> Carrier detected...", 1.5),
-            ("> Handshake in progress...", 6.0),
-            ("> Protocol: V.90 (56 Kbps)...", 3.0),
-            ("> Bypassing IDS/IPS...", 4.0),
-            ("> Escalating to root...", 3.0),
-            ("> Accessing secret_payload...", 2.5),
-            ("> Decrypting visual data...", 3.5),
-        ]
+            ("> Handshake: V.90 Protocol...", 6.0),
+            ("> Bypassing IDS/IPS...", 4.5),
+            ("> Escalating to root...", 3.5),
+            ("> Searching secret_payload...", 3.0),
+            ("> Decrypting visual data...", 5.0),
+        ] # Totale circa 26 secondi
 
         for text, delay in steps:
             full_log += text + "<br>"
             log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
             time.sleep(delay)
 
-        # --- FASE 2: EFFETTO MATRIX + ROCK + IMMAGINE ---
+        # --- FASE 2: MUSICA ROCK + MATRIX RAIN + IMMAGINE ---
         
-        # Parte la pioggia di bit (CSS)
+        # Audio Rock (sovrascrive il modem essendo un nuovo componente iniettato)
+        play_audio_hidden(find_file("musica.mp3"))
+        
+        # Pioggia Digitale
         start_cyber_rain()
-
-        # Cambio Audio: Rock!
-        rock_path = find_file("musica.mp3")
-        if rock_path:
-            with open(rock_path, "rb") as f:
-                audio_placeholder.audio(f.read(), format="audio/mp3", autoplay=True)
 
         # ASCII ART
         ascii_art = r"""
@@ -150,7 +146,6 @@ def main():
         
         st.success("BREACH SUCCESSFUL: Happy Hacking & Merry Christmas!")
 
-        # Immagine
         img_path = find_file("foto.png")
         if img_path:
             st.image(img_path, use_container_width=True)
