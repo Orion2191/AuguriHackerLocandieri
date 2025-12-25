@@ -5,7 +5,7 @@ import base64
 import streamlit.components.v1 as components
 
 # Configurazione Pagina
-st.set_page_config(page_title="LOCANDIERI_BREACH_2025", page_icon="💀", layout="centered")
+st.set_page_config(page_title="BREACH_2025", page_icon="💀", layout="centered")
 
 # --- STILE CSS (Terminale, Pioggia di Bit e Invisibilità Audio) ---
 st.markdown("""
@@ -159,4 +159,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
