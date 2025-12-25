@@ -4,34 +4,60 @@ import os
 import base64
 import streamlit.components.v1 as components
 
-# 1. FORZA IL LAYOUT LARGO (Risolve il taglio su Desktop)
-st.set_page_config(page_title="BREACHMAS 2025", page_icon="💀", layout="wide")
+# Configurazione Pagina
+st.set_page_config(page_title="BREACHMAS_2025", page_icon="💀", layout="wide")
 
-# --- CSS AGGRESSIVO ---
+# --- CSS DEFINITIVO E AGGRESSIVO ---
 st.markdown("""
     <style>
-    .stApp { background-color: #000000; }
+    .stApp { background-color: #000000; overflow-x: hidden; }
     header, footer, #MainMenu {visibility: hidden;}
 
-    /* LOG INIZIALI: Grandi e nitidi */
+    /* TESTO LOG: Grande e verde */
     .log-text {
         color: #00FF41 !important;
         font-family: 'Courier New', Courier, monospace !important;
-        font-size: 22px !important; 
-        font-weight: bold;
+        font-size: 20px !important; 
         line-height: 1.6;
-        text-shadow: 0 0 5px #00FF41;
         margin-bottom: 10px;
+        display: block;
     }
 
-    /* CONTENITORE PER ASCII RESPONSIVO */
-    .ascii-container {
+    /* BOX ASCII: Tecnica 'Scale-to-Fit' */
+    .ascii-wrapper {
         width: 100%;
-        max-width: 900px;
-        margin: 0 auto;
+        display: flex;
+        justify-content: flex-start;
+        overflow: visible;
+        margin: 20px 0;
+    }
+
+    .terminal-box {
+        color: #00FF41 !important;
+        font-family: 'Courier New', Courier, monospace !important;
+        white-space: pre !important;
         border: 1px solid #00FF41;
-        padding: 10px;
+        padding: 15px;
         background: black;
+        /* La magia: scala l'intero blocco se lo schermo è piccolo */
+        transform-origin: left top;
+    }
+
+    /* Se lo schermo è stretto (Mobile), rimpicciolisce l'intero blocco */
+    @media screen and (max-width: 600px) {
+        .terminal-box {
+            transform: scale(0.45); /* Riduce al 45% della dimensione */
+            width: 210%; /* Compensa la scala per non lasciare vuoti */
+        }
+        .log-text { font-size: 16px !important; }
+    }
+    
+    /* Se lo schermo è Desktop, scala normale */
+    @media screen and (min-width: 601px) {
+        .terminal-box {
+            transform: scale(0.9);
+            font-size: 14px;
+        }
     }
 
     /* Matrix Rain */
@@ -47,11 +73,8 @@ st.markdown("""
     }
     @keyframes fall { to { transform: translateY(110vh); } }
 
-    /* Nasconde il player audio ma lo tiene attivo */
-    div[data-testid="stAudio"] {
-        position: fixed;
-        bottom: -100px;
-    }
+    /* Nasconde player */
+    div[data-testid="stAudio"] { position: fixed; bottom: -100px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -79,10 +102,10 @@ def play_audio_hidden(b64_string):
 
 def start_cyber_rain():
     import random
-    cols = 30
+    cols = 35
     html_bits = '<div class="matrix-rain">'
     for i in range(cols):
-        left = i * 3.3
+        left = i * 3
         duration = random.uniform(2, 5)
         delay = random.uniform(0, 3)
         color = "#00FF41" if i % 2 == 0 else "#FF0000"
@@ -111,11 +134,11 @@ def main():
         steps = [
             ("> Dialing 01010011...", 2.5),
             ("> Carrier detected...", 1.5),
-            ("> Handshake: V.90...", 6.0),
-            ("> Bypassing IDS/IPS...", 4.5),
-            ("> Escalating to root...", 4.0),
+            ("> Handshake: V.90 Protocol...", 6.0),
+            ("> Bypassing firewall...", 4.5),
+            ("> Escalating to root...", 3.5),
             ("> Accessing payload...", 3.0),
-            ("> Decrypting buffer...", 2.5),
+            ("> Decrypting visual data...", 3.0),
         ]
 
         for text, delay in steps:
@@ -123,7 +146,7 @@ def main():
             log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
             time.sleep(delay)
 
-        # Buffer per musica rock
+        # Caricamento musica rock durante l'ultimo log
         full_log += "> Executing Payload.bin...<br>"
         log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
         rock_b64 = get_audio_b64(find_file("musica.mp3"))
@@ -133,25 +156,24 @@ def main():
         play_audio_hidden(rock_b64)
         start_cyber_rain()
 
-        # ASCII ART IN SVG (Garantisce che non si rompa MAI)
-        # Ho ridotto leggermente gli spazi tra le lettere per farla stare ovunque
-        ascii_svg = r"""
-        <svg viewBox="0 0 600 180" xmlns="http://www.w3.org/2000/svg">
-            <style> .t { font: bold 12px monospace; fill: #00FF41; } </style>
-            <text x="50%" y="20" class="t" text-anchor="middle"> █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗██████╗ ██╗</text>
-            <text x="50%" y="35" class="t" text-anchor="middle">██╔══██╗██║   ██║██╔════╝ ██║   ██║██╔══██╗██║</text>
-            <text x="50%" y="50" class="t" text-anchor="middle">███████║██║   ██║██║  ███╗██║   ██║██████╔╝██║</text>
-            <text x="50%" y="65" class="t" text-anchor="middle">██╔══██║██║   ██║██║   ██║██║   ██║██╔══██╗██║</text>
-            <text x="50%" y="80" class="t" text-anchor="middle">██║  ██║╚██████╔╝╚██████╔╝╚██████╔╝██║  ██║██║</text>
-            <text x="50%" y="95" class="t" text-anchor="middle">╚═╝  ╚═╝ ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝</text>
-            <text x="50%" y="120" class="t" text-anchor="middle">██╗    ██████╗  ██████╗ █████╗ ███╗  ██╗██████╗ ██╗███████╗██████╗ ██╗</text>
-            <text x="50%" y="135" class="t" text-anchor="middle">██║    ██╔═══██╗██╔════╝██╔══██╗████╗ ██║██╔══██╗██║██╔════╝██╔══██╗██║</text>
-            <text x="50%" y="150" class="t" text-anchor="middle">██║    ██║   ██║██║     ███████║██╔██╗██║██║  ██║██║█████╗  ██████╔╝██║</text>
-            <text x="50%" y="165" class="t" text-anchor="middle">██████╗╚██████╔╝╚██████╗██║  ██║██║ ╚████║██████╔╝██║███████╗██║  ██║██║</text>
-            <text x="50%" y="180" class="t" text-anchor="middle">╚═════╝ ╚═════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝╚══════╝╚═╝  ╚═╝╚═╝</text>
-        </svg>
-        """
-        st.markdown(f'<div class="ascii-container">{ascii_svg}</div>', unsafe_allow_html=True)
+        # ASCII ART (Unita in un unico blocco preformattato)
+        ascii_art = r"""
+ █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗██████╗ ██╗
+██╔══██╗██║   ██║██╔════╝ ██║   ██║██╔══██╗██║
+███████║██║   ██║██║  ███╗██║   ██║██████╔╝██║
+██╔══██║██║   ██║██║   ██║██║   ██║██╔══██╗██║
+██║  ██║╚██████╔╝╚██████╔╝╚██████╔╝██║  ██║██║
+╚═╝  ╚═╝ ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝
+
+██╗      ██████╗  ██████╗  █████╗  ███╗   ██╗██████╗ ██╗███████╗██████╗ ██╗██╗
+██║     ██╔═══██╗██╔════╝ ██╔══██╗ ████╗  ██║██╔══██╗██║██╔════╝██╔══██╗██║██║
+██║     ██║   ██║██║      ███████║ ██╔██╗ ██║██║  ██║██║█████╗  ██████╔╝██║██║
+██║     ██║   ██║██║      ██╔══██║ ██║╚██╗██║██║  ██║██║██╔══╝  ██╔══██╗██║╚═╝
+███████╗╚██████╔╝╚██████╗ ██║  ██║ ██║ ╚████║██████╔╝██║███████╗██║  ██║██║██╗
+╚══════╝ ╚═════╝  ╚═════╝  ╚═╝  ╚═╝ ╚═╝  ╚═══╝╚═════╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝"""
+        
+        # Visualizzazione ASCII con wrapper flessibile
+        st.markdown(f'<div class="ascii-wrapper"><div class="terminal-box">{ascii_art}</div></div>', unsafe_allow_html=True)
         
         st.success("SUCCESS: Buon Natale, Locandieri!")
 
