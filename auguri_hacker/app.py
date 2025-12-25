@@ -5,12 +5,11 @@ import base64
 import streamlit.components.v1 as components
 
 # Configurazione Pagina
-st.set_page_config(page_title="BREACH_2025", page_icon="💀", layout="centered")
+st.set_page_config(page_title="LOCANDIERI_BREACH_2025", page_icon="💀", layout="centered")
 
-# --- CSS RESPONSIVE E LOOK TERMINALE ---
+# --- CSS DEFINITIVO: LOOK TERMINALE E AUTO-SCALING ---
 st.markdown("""
     <style>
-    /* Sfondo e scroll */
     .stApp { background-color: #000000; overflow-x: hidden; }
     header, footer, #MainMenu {visibility: hidden;}
 
@@ -23,34 +22,37 @@ st.markdown("""
         z-index: 100;
     }
 
-    /* BOX ASCII RESPONSIVA */
+    /* BOX ASCII: Stesso stile ma RESPONSIVO */
     .terminal-box {
         color: #00FF41;
         font-family: 'Courier New', Courier, monospace !important;
-        white-space: pre !important; /* Impedisce l'andata a capo automatica */
+        white-space: pre !important;
         border: 1px solid #00FF41;
-        padding: 10px;
+        padding: 15px;
         background: rgba(0,0,0,0.9);
         position: relative;
         z-index: 100;
         
-        /* TRUCCO PER IL RIDIMENSIONAMENTO AUTOMATICO */
-        /* 1.2vw significa che la dimensione dipende dalla larghezza dello schermo */
-        font-size: 1.15vw !important; 
-        line-height: 1.2 !important;
+        /* Font dinamico che si stringe su mobile senza rompersi */
+        font-size: 1.1vw !important; 
+        line-height: 1.1 !important;
+        letter-spacing: -0.02em;
         width: 100%;
-        text-align: left;
+        text-align: center;
+        display: inline-block;
     }
 
-    /* Media query per schermi molto piccoli (Smartphone) */
+    /* Aggiustamento specifico per smartphone */
     @media screen and (max-width: 600px) {
         .terminal-box {
-            font-size: 1.25vw !important; /* Leggermente più grande su mobile per leggibilità */
-            padding: 5px;
+            font-size: 1.3vw !important; /* Leggermente più grande per distinguere i tratti */
+            padding: 8px;
+            letter-spacing: -0.05em;
         }
+        .log-text { font-size: 13px; }
     }
 
-    /* Animazione Matrix Natalizia */
+    /* Matrix Rain Natalizia */
     .matrix-rain {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -106,19 +108,18 @@ def main():
         st.session_state.authorized = False
 
     if not st.session_state.authorized:
-        st.markdown('<p class="log-text">SYSTEM: CACTUS_SERVER<br>DATE: 25-12-2025<br>STATUS: ENCRYPTED</p>', unsafe_allow_html=True)
-        if st.button("RUN EXPLOIT"):
+        st.markdown('<p class="log-text">ID: LOCANDIERI_2025<br>SECURITY: CRITICAL<br>STATUS: ENCRYPTED</p>', unsafe_allow_html=True)
+        if st.button("RUN EXPLOIT: DECRYPT_AUGURI.SH"):
             st.session_state.authorized = True
             st.rerun()
     else:
-        # 1. Parte il suono del Modem
+        # 1. Modem Audio (26 secondi di sincronizzazione)
         modem_b64 = get_audio_b64(find_file("modem.mp3"))
         play_audio_hidden(modem_b64)
 
         log_placeholder = st.empty()
         full_log = ""
         
-        # 2. Sequenza Log Sincronizzata (26 secondi totali)
         steps = [
             ("> Dialing 01010011...", 2.5),
             ("> Carrier detected...", 1.5),
@@ -126,7 +127,7 @@ def main():
             ("> Bypassing IDS/IPS...", 4.5),
             ("> Escalating to root...", 3.5),
             ("> Accessing secret_payload...", 3.0),
-            ("> Initializing Decryptor...", 1.0),
+            ("> Decrypting visual data...", 2.0),
         ]
 
         for text, delay in steps:
@@ -134,20 +135,18 @@ def main():
             log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
             time.sleep(delay)
 
-        # Caricamento musica rock durante l'ultimo log
-        full_log += "> Decrypting media buffer...<br>"
+        # Buffer calcolato per la musica rock
+        full_log += "> Executing payload...<br>"
         log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
         rock_b64 = get_audio_b64(find_file("musica.mp3"))
-        
-        full_log += "> Payload Ready. Executing...<br>"
-        log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
-        time.sleep(2.0)
+        time.sleep(3.0) 
 
-        # --- FASE FINALE (ROCK + RAIN + AUGURI) ---
+        # --- FASE FINALE (ROCK + RAIN + ASCII) ---
         play_audio_hidden(rock_b64)
         start_cyber_rain()
 
-        # ASCII ART (AUGURI + LOCANDIERI!)
+        # ASCII ART: AUGURI + LOCANDIERI! (Stesso stile coordinato)
+        # Ottimizzata per essere leggibile anche se rimpicciolita
         ascii_art = r"""
  █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗██████╗ ██╗
 ██╔══██╗██║   ██║██╔════╝ ██║   ██║██╔══██╗██║
@@ -156,24 +155,23 @@ def main():
 ██║  ██║╚██████╔╝╚██████╔╝╚██████╔╝██║  ██║██║
 ╚═╝  ╚═╝ ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝
 
-██╗      ██████╗  ██████╗  █████╗  ███╗   ██╗██████╗ ██╗███████╗██████╗ ██╗██╗
-██║     ██╔═══██╗██╔════╝ ██╔══██╗ ████╗  ██║██╔══██╗██║██╔════╝██╔══██╗██║██║
-██║     ██║   ██║██║      ███████║ ██╔██╗ ██║██║  ██║██║█████╗  ██████╔╝██║██║
-██║     ██║   ██║██║      ██╔══██║ ██║╚██╗██║██║  ██║██║██╔══╝  ██╔══██╗██║╚═╝
-███████╗╚██████╔╝╚██████╗ ██║  ██║ ██║ ╚████║██████╔╝██║███████╗██║  ██║██║██╗
-╚══════╝ ╚═════╝  ╚═════╝  ╚═╝  ╚═╝ ╚═╝  ╚═══╝╚═════╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝
+██╗     ██████╗  ██████╗ █████╗ ███╗   ██╗██████╗ ██╗███████╗██████╗ ██╗██╗
+██║    ██╔═══██╗██╔════╝██╔══██╗████╗  ██║██╔══██╗██║██╔════╝██╔══██╗██║██║
+██║    ██║   ██║██║     ███████║██╔██╗ ██║██║  ██║██║█████╗  ██████╔╝██║██║
+██║    ██║   ██║██║     ██╔══██║██║╚██╗██║██║  ██║██║██╔══╝  ██╔══██╗██║╚═╝
+███████╗╚██████╔╝╚██████╗██║  ██║██║ ╚████║██████╔╝██║███████╗██║  ██║██║██╗
+╚══════╝ ╚═════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝
         """
         
-        # La box ora usa le classi CSS responsive definite sopra
         st.markdown(f'<div class="terminal-box">{ascii_art}</div>', unsafe_allow_html=True)
         
-        st.success("ACCESS GRANTED: Buon Natale, Locandieri!")
+        st.success("SUCCESS: Buon Natale, Locandieri!")
 
         img_path = find_file("foto.png")
         if img_path:
             st.image(img_path, use_container_width=True)
         
-        st.markdown('<p class="log-text">root@cactus_server:~# _</p>', unsafe_allow_html=True)
+        st.markdown('<p class="log-text">root@locandieri_server:~# _</p>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
