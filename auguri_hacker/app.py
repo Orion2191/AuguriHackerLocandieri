@@ -1,38 +1,67 @@
 import streamlit as st
 import time
 import os
-import streamlit.components.v1 as components
 
 # Configurazione Pagina
-st.set_page_config(page_title="BREACH_TERMINAL_2025", page_icon="💀", layout="centered")
+st.set_page_config(page_title="BREACH_2025", page_icon="💀", layout="centered")
 
-# CSS: Terminale puro + Nascondi Audio Player
+# --- CSS AGGRESSIVO ---
 st.markdown("""
     <style>
-    .stApp { background-color: #000000; }
-    div[data-testid="stAudio"] { display: none; } /* Nasconde il player */
-    .terminal-box {
-        background-color: #000000;
-        color: #00FF41;
-        font-family: 'Courier New', Courier, monospace !important;
-        font-size: 13px !important;
-        white-space: pre !important;
-        overflow-x: auto !important;
-        line-height: 1.2 !important;
-        border: 1px solid #00FF41;
-        padding: 20px;
-        position: relative;
-        z-index: 10;
+    .stApp { background-color: #000000; overflow: hidden; }
+    
+    /* NASCONDE IL PLAYER AUDIO MA LO TIENE ATTIVO */
+    div[data-testid="stAudio"] {
+        position: fixed;
+        bottom: -100px;
+        opacity: 0;
     }
+
     .log-text {
         color: #00FF41;
         font-family: 'Courier New', Courier, monospace;
         font-size: 16px;
         line-height: 1.8;
         position: relative;
-        z-index: 10;
+        z-index: 100;
     }
+
+    .terminal-box {
+        color: #00FF41;
+        font-family: 'Courier New', Courier, monospace !important;
+        font-size: 12px !important;
+        white-space: pre !important;
+        border: 1px solid #00FF41;
+        padding: 15px;
+        background: rgba(0,0,0,0.8);
+        position: relative;
+        z-index: 100;
+    }
+
     header, footer, #MainMenu {visibility: hidden;}
+
+    /* ANIMAZIONE CYBER-RAIN NATALIZIA */
+    .matrix-rain {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .bit {
+        position: absolute;
+        top: -20px;
+        font-family: monospace;
+        font-size: 20px;
+        animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+        to { transform: translateY(105vh); }
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -43,35 +72,20 @@ def find_file(name):
                 return os.path.join(root, f)
     return None
 
-def matrix_rain():
-    matrix_js = """
-    <canvas id="matrixCanvas" style="position: fixed; top: 0; left: 0; z-index: 1; width: 100vw; height: 100vh; opacity: 0.4;"></canvas>
-    <script>
-    const canvas = document.getElementById('matrixCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const chars = "010101XMAS2025HACK";
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const drops = [];
-    for (let i = 0; i < columns; i++) drops[i] = 1;
-    function draw() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < drops.length; i++) {
-            const text = chars.charAt(Math.floor(Math.random() * chars.length));
-            ctx.fillStyle = (Math.random() > 0.5) ? '#00FF41' : '#FF0000'; 
-            ctx.font = fontSize + 'px monospace';
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        }
-    }
-    setInterval(draw, 33);
-    </script>
-    """
-    components.html(matrix_js, height=0)
+# Funzione per generare i bit che cadono (CSS puro)
+def start_cyber_rain():
+    import random
+    cols = 20
+    html_bits = '<div class="matrix-rain">'
+    for i in range(cols):
+        left = i * 5
+        duration = random.uniform(2, 5)
+        delay = random.uniform(0, 5)
+        color = "#00FF41" if i % 2 == 0 else "#FF0000" # Alterna Verde e Rosso
+        char = random.choice(["0", "1"])
+        html_bits += f'<div class="bit" style="left:{left}%; color:{color}; animation-duration:{duration}s; animation-delay:{delay}s;">{char}</div>'
+    html_bits += '</div>'
+    st.markdown(html_bits, unsafe_allow_html=True)
 
 def main():
     if 'authorized' not in st.session_state:
@@ -83,6 +97,7 @@ def main():
             st.session_state.authorized = True
             st.rerun()
     else:
+        # Placeholder per l'audio
         audio_placeholder = st.empty()
         
         # --- PARTENZA MODEM ---
@@ -93,33 +108,36 @@ def main():
 
         log_placeholder = st.empty()
         full_log = ""
-
-        # --- SEQUENZA LOG SINCRONIZZATA (TOTALE: 26 SECONDI) ---
+        
+        # --- LOG SINCRONIZZATI (26 SECONDI TOTALI) ---
         steps = [
-            ("> Dialing 01010011...", 2.5),             # Selezione numero
-            ("> Carrier detected...", 1.5),              # Segnale trovato
-            ("> Handshake: V.90 Protocol...", 6.0),      # Il fischio grattato più lungo
-            ("> Bypassing IDS/IPS...", 4.0),             # Tentativo intrusione
-            ("> Escalating to root...", 3.5),            # Privilegi
-            ("> Accessing secret_payload...", 2.5),      # Ricerca file
-            ("> Decrypting visual data...", 5.0),        # Decodifica finale
-            ("---------------------------------------", 1.0) # Fine audio modem
+            ("> Dialing 01010011...", 2.5),
+            ("> Carrier detected...", 1.5),
+            ("> Handshake in progress...", 6.0),
+            ("> Protocol: V.90 (56 Kbps)...", 3.0),
+            ("> Bypassing IDS/IPS...", 4.0),
+            ("> Escalating to root...", 3.0),
+            ("> Accessing secret_payload...", 2.5),
+            ("> Decrypting visual data...", 3.5),
         ]
-        # Totale: 2.5+1.5+6+4+3.5+2.5+5+1 = 26.0 secondi
 
         for text, delay in steps:
             full_log += text + "<br>"
             log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
             time.sleep(delay)
 
-        # --- FASE FINALE: MATRIX RAIN + ROCK ---
-        matrix_rain()
+        # --- FASE 2: EFFETTO MATRIX + ROCK + IMMAGINE ---
+        
+        # Parte la pioggia di bit (CSS)
+        start_cyber_rain()
 
+        # Cambio Audio: Rock!
         rock_path = find_file("musica.mp3")
         if rock_path:
             with open(rock_path, "rb") as f:
                 audio_placeholder.audio(f.read(), format="audio/mp3", autoplay=True)
 
+        # ASCII ART
         ascii_art = r"""
  █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗██████╗ ██╗
 ██╔══██╗██║   ██║██╔════╝ ██║   ██║██╔══██╗██║
@@ -129,8 +147,10 @@ def main():
 ╚═╝  ╚═╝ ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝
         """
         st.markdown(f'<div class="terminal-box">{ascii_art}</div>', unsafe_allow_html=True)
+        
         st.success("BREACH SUCCESSFUL: Happy Hacking & Merry Christmas!")
 
+        # Immagine
         img_path = find_file("foto.png")
         if img_path:
             st.image(img_path, use_container_width=True)
