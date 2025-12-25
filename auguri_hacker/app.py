@@ -5,13 +5,14 @@ import base64
 import streamlit.components.v1 as components
 
 # Configurazione Pagina
-st.set_page_config(page_title="BREACH_2025", page_icon="💀", layout="centered")
+st.set_page_config(page_title="LOCANDIERI_BREACH_2025", page_icon="💀", layout="centered")
 
-# --- CSS LOOK TERMINALE ---
+# --- STILE CSS (Terminale, Pioggia di Bit e Invisibilità Audio) ---
 st.markdown("""
     <style>
     .stApp { background-color: #000000; overflow: hidden; }
     header, footer, #MainMenu {visibility: hidden;}
+
     .log-text {
         color: #00FF41;
         font-family: 'Courier New', Courier, monospace;
@@ -20,17 +21,20 @@ st.markdown("""
         position: relative;
         z-index: 100;
     }
+
     .terminal-box {
         color: #00FF41;
         font-family: 'Courier New', Courier, monospace !important;
-        font-size: 12px !important;
         white-space: pre !important;
         border: 1px solid #00FF41;
         padding: 15px;
         background: rgba(0,0,0,0.9);
         position: relative;
         z-index: 100;
+        overflow-x: auto;
     }
+
+    /* Animazione Matrix Natalizia */
     .matrix-rain {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -52,14 +56,13 @@ def find_file(name):
                 return os.path.join(root, f)
     return None
 
-# Funzione per preparare l'audio (restituisce la stringa Base64)
 def get_audio_b64(file_path):
     if file_path and os.path.exists(file_path):
         with open(file_path, "rb") as f:
             return base64.b64encode(f.read()).decode()
     return None
 
-def play_audio_b64(b64_string):
+def play_audio_hidden(b64_string):
     if b64_string:
         audio_html = f"""
             <audio autoplay="true" style="display:none;">
@@ -87,20 +90,19 @@ def main():
         st.session_state.authorized = False
 
     if not st.session_state.authorized:
-        st.markdown('<p class="log-text">ID: UNKNOWN_DEVICE<br>DATE: 25-12-2025<br>STATUS: LOCKED</p>', unsafe_allow_html=True)
-        if st.button("RUN EXPLOIT"):
+        st.markdown('<p class="log-text">SYSTEM: LOCANDIERI_SERVER<br>DATE: 25-12-2025<br>STATUS: ENCRYPTED</p>', unsafe_allow_html=True)
+        if st.button("RUN EXPLOIT: DECRYPT_AUGURI.SH"):
             st.session_state.authorized = True
             st.rerun()
     else:
-        # 1. Carichiamo subito il Base64 del modem (veloce)
+        # 1. Parte il suono del Modem
         modem_b64 = get_audio_b64(find_file("modem.mp3"))
-        play_audio_b64(modem_b64)
+        play_audio_hidden(modem_b64)
 
         log_placeholder = st.empty()
         full_log = ""
         
-        # Sequenza log (Totale circa 23 secondi di attesa "reale")
-        # Lasciamo gli ultimi 3 secondi per il calcolo della musica rock
+        # 2. Sequenza Log Sincronizzata (26 secondi totali)
         steps = [
             ("> Dialing 01010011...", 2.5),
             ("> Carrier detected...", 1.5),
@@ -108,7 +110,7 @@ def main():
             ("> Bypassing IDS/IPS...", 4.5),
             ("> Escalating to root...", 3.5),
             ("> Accessing secret_payload...", 3.0),
-            ("> Initializing decryptor...", 2.0),
+            ("> Initializing Decryptor...", 1.0),
         ]
 
         for text, delay in steps:
@@ -116,37 +118,44 @@ def main():
             log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
             time.sleep(delay)
 
-        # 2. Mentre il modem finisce di gracchiare (ultimi secondi), 
-        # facciamo il lavoro pesante di caricare la musica Rock
-        full_log += "> Decrypting large media buffer...<br>"
+        # Caricamento musica rock durante l'ultimo log per evitare buchi di silenzio
+        full_log += "> Decrypting media buffer...<br>"
         log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
+        rock_b64 = get_audio_b64(find_file("musica.mp3"))
         
-        rock_b64 = get_audio_b64(find_file("musica.mp3")) # Qui avviene il "ritardo" calcolato
-        
-        full_log += "> SUCCESS. Executing payload...<br>"
+        full_log += "> Payload Ready. Executing...<br>"
         log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
-        time.sleep(1)
+        time.sleep(2.0) # Ultimi secondi per arrivare a 26
 
-        # --- AZIONE FINALE ---
-        play_audio_b64(rock_b64)
+        # --- FASE FINALE (ROCK + RAIN + AUGURI) ---
+        play_audio_hidden(rock_b64)
         start_cyber_rain()
 
+        # ASCII ART coordinata
         ascii_art = r"""
  █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗██████╗ ██╗
 ██╔══██╗██║   ██║██╔════╝ ██║   ██║██╔══██╗██║
 ███████║██║   ██║██║  ███╗██║   ██║██████╔╝██║
 ██╔══██║██║   ██║██║   ██║██║   ██║██╔══██╗██║
 ██║  ██║╚██████╔╝╚██████╔╝╚██████╔╝██║  ██║██║
-╚═╝  ╚═╝ ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝"""
-        st.markdown(f'<div class="terminal-box">{ascii_art}</div>', unsafe_allow_html=True)
+╚═╝  ╚═╝ ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝
+
+██╗      ██████╗  ██████╗  █████╗  ███╗   ██╗██████╗ ██╗███████╗██████╗ ██╗██╗
+██║     ██╔═══██╗██╔════╝ ██╔══██╗ ████╗  ██║██╔══██╗██║██╔════╝██╔══██╗██║██║
+██║     ██║   ██║██║      ███████║ ██╔██╗ ██║██║  ██║██║█████╗  ██████╔╝██║██║
+██║     ██║   ██║██║      ██╔══██║ ██║╚██╗██║██║  ██║██║██╔══╝  ██╔══██╗██║╚═╝
+███████╗╚██████╔╝╚██████╗ ██║  ██║ ██║ ╚████║██████╔╝██║███████╗██║  ██║██║██╗
+╚══════╝ ╚═════╝  ╚═════╝  ╚═╝  ╚═╝ ╚═╝  ╚═══╝╚═════╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝
+        """
+        st.markdown(f'<div class="terminal-box" style="font-size: 10px !important;">{ascii_art}</div>', unsafe_allow_html=True)
         
-        st.success("BREACH SUCCESSFUL: Buon Natale!")
+        st.success("ACCESS GRANTED: Buon Natale, Locandieri!")
 
         img_path = find_file("foto.png")
         if img_path:
             st.image(img_path, use_container_width=True)
         
-        st.markdown('<p class="log-text">root@cybersec:~# _</p>', unsafe_allow_html=True)
+        st.markdown('<p class="log-text">root@locandieri_server:~# _</p>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
