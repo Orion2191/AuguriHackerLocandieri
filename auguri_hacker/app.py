@@ -5,12 +5,12 @@ import base64
 import streamlit.components.v1 as components
 
 # Configurazione Pagina
-st.set_page_config(page_title="BREACH_2025", page_icon="💀", layout="centered")
+st.set_page_config(page_title="LOCANDIERI_BREACH_2025", page_icon="💀", layout="centered")
 
 # --- STILE CSS (Terminale, Pioggia di Bit e Invisibilità Audio) ---
 st.markdown("""
     <style>
-    .stApp { background-color: #000000; overflow: hidden; }
+    .stApp { background-color: #000000; overflow-x: hidden; }
     header, footer, #MainMenu {visibility: hidden;}
 
     .log-text {
@@ -27,11 +27,15 @@ st.markdown("""
         font-family: 'Courier New', Courier, monospace !important;
         white-space: pre !important;
         border: 1px solid #00FF41;
-        padding: 15px;
+        padding: 10px;
         background: rgba(0,0,0,0.9);
         position: relative;
         z-index: 100;
+        /* Ottimizzazione per non far uscire il testo dai bordi */
+        font-size: 8px !important; 
+        line-height: 1.1 !important;
         overflow-x: auto;
+        width: 100%;
     }
 
     /* Animazione Matrix Natalizia */
@@ -90,8 +94,8 @@ def main():
         st.session_state.authorized = False
 
     if not st.session_state.authorized:
-        st.markdown('<p class="log-text">SYSTEM: SERVER<br>DATE: 25-12-2025<br>STATUS: ENCRYPTED</p>', unsafe_allow_html=True)
-        if st.button("RUN EXPLOIT"):
+        st.markdown('<p class="log-text">SYSTEM: LOCANDIERI_SERVER<br>DATE: 25-12-2025<br>STATUS: ENCRYPTED</p>', unsafe_allow_html=True)
+        if st.button("RUN EXPLOIT: DECRYPT_AUGURI.SH"):
             st.session_state.authorized = True
             st.rerun()
     else:
@@ -118,20 +122,20 @@ def main():
             log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
             time.sleep(delay)
 
-        # Caricamento musica rock durante l'ultimo log per evitare buchi di silenzio
+        # Caricamento musica rock durante l'ultimo log
         full_log += "> Decrypting media buffer...<br>"
         log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
         rock_b64 = get_audio_b64(find_file("musica.mp3"))
         
         full_log += "> Payload Ready. Executing...<br>"
         log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
-        time.sleep(2.0) # Ultimi secondi per arrivare a 26
+        time.sleep(2.0)
 
         # --- FASE FINALE (ROCK + RAIN + AUGURI) ---
         play_audio_hidden(rock_b64)
         start_cyber_rain()
 
-        # ASCII ART coordinata
+        # ASCII ART coordinata (AUGURI + LOCANDIERI!)
         ascii_art = r"""
  █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗██████╗ ██╗
 ██╔══██╗██║   ██║██╔════╝ ██║   ██║██╔══██╗██║
@@ -147,18 +151,18 @@ def main():
 ███████╗╚██████╔╝╚██████╗ ██║  ██║ ██║ ╚████║██████╔╝██║███████╗██║  ██║██║██╗
 ╚══════╝ ╚═════╝  ╚═════╝  ╚═╝  ╚═╝ ╚═╝  ╚═══╝╚═════╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝
         """
-        st.markdown(f'<div class="terminal-box" style="font-size: 10px !important;">{ascii_art}</div>', unsafe_allow_html=True)
+        
+        # Visualizzazione ASCII con font scalabile per smartphone
+        st.markdown(f'<div class="terminal-box">{ascii_art}</div>', unsafe_allow_html=True)
         
         st.success("ACCESS GRANTED: Buon Natale, Locandieri!")
 
         img_path = find_file("foto.png")
         if img_path:
+            # use_container_width assicura che l'immagine si adatti allo schermo
             st.image(img_path, use_container_width=True)
         
         st.markdown('<p class="log-text">root@locandieri_server:~# _</p>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
-
-
-
