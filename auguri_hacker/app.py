@@ -7,44 +7,56 @@ import streamlit.components.v1 as components
 # Configurazione Pagina
 st.set_page_config(page_title="BREACH_2025", page_icon="💀", layout="centered")
 
-# --- CSS DEFINITIVO SEPARATO ---
+# --- CSS RESPONSIVE E LOOK TERMINALE ---
 st.markdown("""
     <style>
     .stApp { background-color: #000000; overflow-x: hidden; }
     header, footer, #MainMenu {visibility: hidden;}
 
-    /* TESTO LOG: Sempre leggibile, non rimpicciolisce */
+    /* LOG TESTUALE: Dimensione fissa per leggibilità */
     .log-text {
         color: #00FF41;
         font-family: 'Courier New', Courier, monospace;
-        font-size: 16px !important; /* Dimensione fissa */
+        font-size: 16px !important;
         line-height: 1.6;
         margin-bottom: 10px;
         position: relative;
         z-index: 100;
     }
 
-    /* BOX ASCII: Responsive ma protetta */
+    /* BOX ASCII: Auto-adattiva al 100% */
     .terminal-box {
         color: #00FF41;
         font-family: 'Courier New', Courier, monospace !important;
         white-space: pre !important;
         border: 1px solid #00FF41;
-        padding: 15px;
+        padding: 10px;
         background: rgba(0,0,0,0.9);
         position: relative;
         z-index: 100;
         
-        /* Font-size fluido: si adatta ma ha un limite minimo */
-        font-size: clamp(8px, 1.2vw, 14px) !important; 
-        line-height: 1.1 !important;
-        
-        /* Se lo schermo è troppo stretto, abilita lo scroll laterale solo qui */
-        overflow-x: auto;
+        /* CALCOLO MATEMATICO: 
+           La riga più lunga è circa 78 caratteri. 
+           1.25vw assicura che 80 caratteri stiano sempre in larghezza 
+        */
+        font-size: 1.25vw !important; 
+        line-height: 1.15 !important;
         width: 100%;
+        text-align: left;
+        display: block;
     }
 
-    /* Animazione Matrix Natalizia */
+    /* Ottimizzazione per Smartphone (Schermo verticale) */
+    @media screen and (max-width: 600px) {
+        .terminal-box {
+            /* Su mobile aumentiamo leggermente il rapporto per riempire lo schermo */
+            font-size: 1.30vw !important; 
+            padding: 5px;
+        }
+        .log-text { font-size: 14px !important; }
+    }
+
+    /* Matrix Rain Natalizia */
     .matrix-rain {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -100,19 +112,18 @@ def main():
         st.session_state.authorized = False
 
     if not st.session_state.authorized:
-        st.markdown('<p class="log-text">ID: CACTUS_SERVER<br>STATUS: ENCRYPTED</p>', unsafe_allow_html=True)
+        st.markdown('<p class="log-text">ID: CACTUS_SERVER<br>DATE: 25-12-2025<br>STATUS: ENCRYPTED</p>', unsafe_allow_html=True)
         if st.button("RUN EXPLOIT"):
             st.session_state.authorized = True
             st.rerun()
     else:
-        # 1. Caricamento Modem (26s)
+        # 1. Modem Audio (Sincronizzato 26s)
         modem_b64 = get_audio_b64(find_file("modem.mp3"))
         play_audio_hidden(modem_b64)
 
         log_placeholder = st.empty()
         full_log = ""
         
-        # Sequenza log calibrata per 26 secondi totali
         steps = [
             ("> Dialing 01010011...", 2.5),
             ("> Carrier detected...", 1.5),
@@ -120,7 +131,7 @@ def main():
             ("> Bypassing IDS/IPS...", 4.5),
             ("> Escalating to root...", 3.5),
             ("> Accessing secret_payload...", 3.0),
-            ("> Initializing decryptor...", 2.0),
+            ("> Decrypting visual buffer...", 3.0),
         ]
 
         for text, delay in steps:
@@ -128,17 +139,17 @@ def main():
             log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
             time.sleep(delay)
 
-        # Ultimo pezzo di log mentre carichiamo la musica rock pesante
-        full_log += "> Executing final payload...<br>"
+        # Caricamento musica rock pesante nell'ultimo log
+        full_log += "> Executing Rock_Payload.bin...<br>"
         log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
         rock_b64 = get_audio_b64(find_file("musica.mp3"))
-        time.sleep(3.0) # Arriviamo a ~26 secondi
+        time.sleep(2.0) # Totale 26s circa
 
         # --- FASE FINALE ---
         play_audio_hidden(rock_b64)
         start_cyber_rain()
 
-        # ASCII ART coordinata e pulita
+        # ASCII ART coordinata
         ascii_art = r"""
  █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗██████╗ ██╗
 ██╔══██╗██║   ██║██╔════╝ ██║   ██║██╔══██╗██║
@@ -154,7 +165,7 @@ def main():
 ███████╗╚██████╔╝╚██████╗ ██║  ██║ ██║ ╚████║██████╔╝██║███████╗██║  ██║██║██╗
 ╚══════╝ ╚═════╝  ╚═════╝  ╚═╝  ╚═╝ ╚═╝  ╚═══╝╚═════╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝"""
         
-        # Visualizzazione ASCII box
+        # Visualizzazione ASCII con font auto-scalabile
         st.markdown(f'<div class="terminal-box">{ascii_art}</div>', unsafe_allow_html=True)
         
         st.success("ACCESS GRANTED: Buon Natale, Locandieri!")
@@ -167,4 +178,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
