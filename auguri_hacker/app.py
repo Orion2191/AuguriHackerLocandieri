@@ -71,6 +71,7 @@ def play_audio_hidden(b64_string):
         audio_html = f'<audio autoplay="true" style="display:none;"><source src="data:audio/mp3;base64,{b64_string}" type="audio/mp3"></audio>'
         components.html(audio_html, height=0, width=0)
 
+# RIPRISTINO DELLA PIOGGIA ORIGINALE (0, 1, X, M, A, S)
 def matrix_rain_js():
     js_code = """
     <canvas id="matrix" style="position: fixed; top: 0; left: 0; z-index: 0; width: 100vw; height: 100vh; opacity: 0.5;"></canvas>
@@ -153,3 +154,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
