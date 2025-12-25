@@ -2,7 +2,6 @@ import streamlit as st
 import time
 import os
 import base64
-from PIL import Image, ImageDraw, ImageFont
 import streamlit.components.v1 as components
 
 # 1. Configurazione Pagina
@@ -78,25 +77,6 @@ def matrix_rain_js():
     """
     components.html(js_code, height=0)
 
-# FUNZIONE PER TRASFORMARE ASCII IN IMMAGINE PNG
-def render_ascii_to_image(text):
-    # Crea un'immagine nera temporanea per calcolare le dimensioni
-    lines = text.split('\n')
-    width = max(len(line) for line in lines) * 10
-    height = len(lines) * 18
-    img = Image.new('RGB', (width, height), color=(0, 0, 0))
-    d = ImageDraw.Draw(img)
-    
-    # Usa un font monospace standard del sistema
-    try:
-        font = ImageFont.load_default()
-    except:
-        font = None
-        
-    # Disegna il testo in verde neon
-    d.text((10, 10), text, fill=(0, 255, 65), font=font)
-    return img
-
 def main():
     if 'authorized' not in st.session_state: st.session_state.authorized = False
 
@@ -126,6 +106,7 @@ def main():
         for i, (text, delay) in enumerate(steps):
             full_log += text + "<br>"
             log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
+            # Pre-carica la musica rock per evitare ritardi
             if i == 4: rock_b64 = get_audio_b64(find_file("musica.mp3"))
             time.sleep(delay)
 
@@ -133,32 +114,17 @@ def main():
         play_audio_hidden(rock_b64)
         matrix_rain_js()
 
-        # TESTO ASCII
-        ascii_text = r"""
- █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗██████╗ ██╗
-██╔══██╗██║   ██║██╔════╝ ██║   ██║██╔══██╗██║
-███████║██║   ██║██║  ███╗██║   ██║██████╔╝██║
-██╔══██║██║   ██║██║   ██║██║   ██║██╔══██╗██║
-██║  ██║╚██████╔╝╚██████╔╝╚██████╔╝██║  ██║██║
-╚═╝  ╚═╝ ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝
-
-██╗      ██████╗  ██████╗  █████╗  ███╗   ██╗██████╗ ██╗███████╗██████╗ ██╗██╗
-██║     ██╔═══██╗██╔════╝ ██╔══██╗ ████╗  ██║██╔══██╗██║██╔════╝██╔══██╗██║██║
-██║     ██║   ██║██║      ███████║ ██╔██╗ ██║██║  ██║██║█████╗  ██████╔╝██║██║
-██║     ██║   ██║██║      ██╔══██║ ██║╚██╗██║██║  ██║██║██╔══╝  ██╔══██╗██║╚═╝
-███████╗╚██████╔╝╚██████╗ ██║  ██║ ██║ ╚████║██████╔╝██║███████╗██║  ██║██║██╗
-╚══════╝ ╚═════╝  ╚═════╝  ╚═╝  ╚═╝ ╚═╝  ╚═══╝╚═════╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝
-        """
-        
-        # MOSTRA ASCII COME IMMAGINE (Indistruttibile)
-        st.image(render_ascii_to_image(ascii_text), use_container_width=True)
+        # Visualizza l'immagine dell'ASCII (decriptata)
+        ascii_img_path = find_file("ascii.png")
+        if ascii_img_path:
+            st.image(ascii_img_path, use_container_width=True)
         
         st.success("SUCCESS: Buon Natale, Locandieri!")
 
-        # Immagine reale
-        img_path = find_file("foto.png")
-        if img_path:
-            st.image(img_path, use_container_width=True)
+        # Visualizza la foto finale
+        foto_path = find_file("foto.png")
+        if foto_path:
+            st.image(foto_path, use_container_width=True)
         
         st.markdown('<div class="log-text">root@cactus_server:~# _</div>', unsafe_allow_html=True)
 
