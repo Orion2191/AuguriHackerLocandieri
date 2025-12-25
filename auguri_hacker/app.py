@@ -7,21 +7,31 @@ import streamlit.components.v1 as components
 # 1. Configurazione Pagina
 st.set_page_config(page_title="BREACHMAS_2025", page_icon="💀", layout="wide")
 
-# 2. CSS DEFINITIVO: Nasconde footer, header e ogni link di Streamlit
+# 2. CSS ULTRA-AGGRESSIVO: Rimuove ogni traccia di Streamlit su Mobile e Desktop
 st.markdown("""
     <style>
-    /* Sfondo Nero e rimozione scroll orizzontale */
+    /* Sfondo Nero Totale */
     .stApp { background-color: #000000; overflow-x: hidden; }
     
-    /* HIDE STREAMLIT BRANDING COMPLETAMENTE */
-    header {visibility: hidden !important;}
-    footer {visibility: hidden !important; display: none !important;}
-    #MainMenu {visibility: hidden !important;}
-    .stDeployButton {display:none !important;}
-    div[data-testid="stStatusWidget"] {visibility: hidden !important;}
+    /* NASCONDE HEADER, FOOTER, MENU E TOOLBAR DI STREAMLIT CLOUD */
+    [data-testid="stHeader"], 
+    header, 
+    footer, 
+    #MainMenu, 
+    .stDeployButton, 
+    [data-testid="stToolbar"], 
+    [data-testid="stDecoration"],
+    [data-testid="stStatusWidget"] {
+        visibility: hidden !important;
+        display: none !important;
+    }
     
-    /* Rimuove lo spazio bianco in alto */
-    .block-container { padding-top: 0rem !important; padding-bottom: 0rem !important; }
+    /* Rimuove i margini forzati in alto e in basso */
+    .block-container { 
+        padding-top: 0rem !important; 
+        padding-bottom: 0rem !important; 
+        max-width: 100% !important;
+    }
 
     /* LOG: Grandi e nitidi */
     .log-text {
@@ -35,7 +45,7 @@ st.markdown("""
     }
 
     /* Nasconde player audio ma lo tiene attivo */
-    div[data-testid="stAudio"] { position: fixed; bottom: -100px; }
+    div[data-testid="stAudio"] { position: fixed; bottom: -100px; opacity: 0; }
     </style>
     """, unsafe_allow_html=True)
 
