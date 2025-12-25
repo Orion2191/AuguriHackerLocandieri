@@ -7,26 +7,31 @@ import streamlit.components.v1 as components
 # 1. Configurazione Pagina
 st.set_page_config(page_title="BREACHMAS_2025", page_icon="💀", layout="wide")
 
-# 2. CSS ULTRA-AGGRESSIVO: Rimuove ogni traccia di Streamlit su Mobile e Desktop
+# 2. CSS "NUCLEAR" - Colpisce specificamente i badge di Streamlit Cloud
 st.markdown("""
     <style>
     /* Sfondo Nero Totale */
     .stApp { background-color: #000000; overflow-x: hidden; }
     
-    /* NASCONDE HEADER, FOOTER, MENU E TOOLBAR DI STREAMLIT CLOUD */
+    /* HIDE TUTTO IL BRANDING (Mobile & Desktop) */
+    header, footer, .stAppDeployButton, #MainMenu {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    /* COLPIAMO I SELETTORI SPECIFICI DI STREAMLIT CLOUD */
     [data-testid="stHeader"], 
-    header, 
-    footer, 
-    #MainMenu, 
-    .stDeployButton, 
     [data-testid="stToolbar"], 
     [data-testid="stDecoration"],
-    [data-testid="stStatusWidget"] {
-        visibility: hidden !important;
+    [data-testid="stStatusWidget"],
+    .st-emotion-cache-10trblm, /* Selettore generico per il footer */
+    .stViewerBadge,            /* Il badge 'Hosted with Streamlit' */
+    #streamlit_share_connect_button {
         display: none !important;
+        visibility: hidden !important;
     }
-    
-    /* Rimuove i margini forzati in alto e in basso */
+
+    /* Rimuove la barra in alto e il padding */
     .block-container { 
         padding-top: 0rem !important; 
         padding-bottom: 0rem !important; 
@@ -125,7 +130,6 @@ def main():
         for i, (text, delay) in enumerate(steps):
             full_log += text + "<br>"
             log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
-            # Pre-carica la musica rock
             if i == 4: rock_b64 = get_audio_b64(find_file("musica.mp3"))
             time.sleep(delay)
 
@@ -133,14 +137,14 @@ def main():
         play_audio_hidden(rock_b64)
         matrix_rain_js()
 
-        # Visualizza l'immagine dell'ASCII (decriptata)
+        # Visualizza l'immagine dell'ASCII (ascii.png)
         ascii_img_path = find_file("ascii.png")
         if ascii_img_path:
             st.image(ascii_img_path, use_container_width=True)
         
         st.success("SUCCESS: Buon Natale, Locandieri!")
 
-        # Visualizza la foto finale
+        # Visualizza la foto finale (foto.png)
         foto_path = find_file("foto.png")
         if foto_path:
             st.image(foto_path, use_container_width=True)
