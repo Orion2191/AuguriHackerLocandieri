@@ -91,7 +91,7 @@ def main():
 
     if not st.session_state.authorized:
         st.markdown('<p class="log-text">SYSTEM: LOCANDIERI_SERVER<br>DATE: 25-12-2025<br>STATUS: ENCRYPTED</p>', unsafe_allow_html=True)
-        if st.button("RUN EXPLOIT: DECRYPT_AUGURI.SH"):
+        if st.button("RUN EXPLOIT"):
             st.session_state.authorized = True
             st.rerun()
     else:
@@ -159,3 +159,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
