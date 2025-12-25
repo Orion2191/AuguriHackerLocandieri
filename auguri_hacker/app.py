@@ -7,26 +7,27 @@ import streamlit.components.v1 as components
 # Configurazione Pagina
 st.set_page_config(page_title="BREACH_2025", page_icon="💀", layout="centered")
 
-# --- CSS RESPONSIVE E LOOK TERMINALE ---
+# --- CSS DEFINITIVO E AGGRESSIVO ---
 st.markdown("""
     <style>
-    .stApp { background-color: #000000; overflow-x: hidden; }
+    /* Sfondo Nero Totale */
+    .stApp { background-color: #000000; }
     header, footer, #MainMenu {visibility: hidden;}
 
-    /* LOG TESTUALE: Dimensione fissa per leggibilità */
+    /* LOG INIZIALI: Forzati a 18px su ogni dispositivo */
     .log-text {
-        color: #00FF41;
-        font-family: 'Courier New', Courier, monospace;
-        font-size: 16px !important;
-        line-height: 1.6;
-        margin-bottom: 10px;
-        position: relative;
-        z-index: 100;
+        color: #00FF41 !important;
+        font-family: 'Courier New', Courier, monospace !important;
+        font-size: 18px !important; 
+        line-height: 1.6 !important;
+        white-space: nowrap !important;
+        margin-bottom: 5px !important;
+        display: block !important;
     }
 
-    /* BOX ASCII: Auto-adattiva al 100% */
+    /* CONTENITORE ASCII: Protezione contro le storture */
     .terminal-box {
-        color: #00FF41;
+        color: #00FF41 !important;
         font-family: 'Courier New', Courier, monospace !important;
         white-space: pre !important;
         border: 1px solid #00FF41;
@@ -34,29 +35,28 @@ st.markdown("""
         background: rgba(0,0,0,0.9);
         position: relative;
         z-index: 100;
+        margin-top: 20px;
         
-        /* CALCOLO MATEMATICO: 
-           La riga più lunga è circa 78 caratteri. 
-           1.25vw assicura che 80 caratteri stiano sempre in larghezza 
-        */
-        font-size: 1.25vw !important; 
-        line-height: 1.15 !important;
-        width: 100%;
-        text-align: left;
-        display: block;
+        /* Font size calcolato per stare in 80 colonne */
+        font-size: 1.2vw !important;
+        line-height: 1.1 !important;
+        overflow-x: hidden; /* Evita scroll se possibile */
     }
 
-    /* Ottimizzazione per Smartphone (Schermo verticale) */
+    /* OTTIMIZZAZIONE PER SMARTPHONE */
     @media screen and (max-width: 600px) {
-        .terminal-box {
-            /* Su mobile aumentiamo leggermente il rapporto per riempire lo schermo */
-            font-size: 1.30vw !important; 
-            padding: 5px;
+        .log-text {
+            font-size: 16px !important; /* Leggermente più piccolo solo se lo schermo è minuscolo */
         }
-        .log-text { font-size: 14px !important; }
+        .terminal-box {
+            font-size: 7.5px !important; /* Misura minima per non far sballare i caratteri */
+            line-height: 1.0 !important;
+            padding: 5px;
+            letter-spacing: -0.2px;
+        }
     }
 
-    /* Matrix Rain Natalizia */
+    /* Matrix Rain */
     .matrix-rain {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -95,10 +95,10 @@ def play_audio_hidden(b64_string):
 
 def start_cyber_rain():
     import random
-    cols = 40
+    cols = 35
     html_bits = '<div class="matrix-rain">'
     for i in range(cols):
-        left = i * 2.5
+        left = i * 3
         duration = random.uniform(2, 6)
         delay = random.uniform(0, 4)
         color = "#00FF41" if i % 2 == 0 else "#FF0000"
@@ -112,18 +112,20 @@ def main():
         st.session_state.authorized = False
 
     if not st.session_state.authorized:
-        st.markdown('<p class="log-text">ID: CACTUS_SERVER<br>DATE: 25-12-2025<br>STATUS: ENCRYPTED</p>', unsafe_allow_html=True)
+        # Messaggio iniziale con classe forzata
+        st.markdown('<div class="log-text">ID: CACTUS_SERVER<br>SECURITY: CRITICAL<br>STATUS: ENCRYPTED</div>', unsafe_allow_html=True)
         if st.button("RUN EXPLOIT"):
             st.session_state.authorized = True
             st.rerun()
     else:
-        # 1. Modem Audio (Sincronizzato 26s)
+        # 1. Caricamento Modem
         modem_b64 = get_audio_b64(find_file("modem.mp3"))
         play_audio_hidden(modem_b64)
 
         log_placeholder = st.empty()
         full_log = ""
         
+        # Sequenza log (26 secondi totali)
         steps = [
             ("> Dialing 01010011...", 2.5),
             ("> Carrier detected...", 1.5),
@@ -139,17 +141,17 @@ def main():
             log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
             time.sleep(delay)
 
-        # Caricamento musica rock pesante nell'ultimo log
+        # Buffer calcolato per caricamento musica rock
         full_log += "> Executing Rock_Payload.bin...<br>"
         log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
         rock_b64 = get_audio_b64(find_file("musica.mp3"))
-        time.sleep(2.0) # Totale 26s circa
+        time.sleep(2.0) 
 
         # --- FASE FINALE ---
         play_audio_hidden(rock_b64)
         start_cyber_rain()
 
-        # ASCII ART coordinata
+        # ASCII ART: Allineata manualmente riga per riga per evitare distorsioni
         ascii_art = r"""
  █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗██████╗ ██╗
 ██╔══██╗██║   ██║██╔════╝ ██║   ██║██╔══██╗██║
@@ -165,16 +167,16 @@ def main():
 ███████╗╚██████╔╝╚██████╗ ██║  ██║ ██║ ╚████║██████╔╝██║███████╗██║  ██║██║██╗
 ╚══════╝ ╚═════╝  ╚═════╝  ╚═╝  ╚═╝ ╚═╝  ╚═══╝╚═════╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝"""
         
-        # Visualizzazione ASCII con font auto-scalabile
+        # Visualizzazione ASCII con classe terminal-box protetta
         st.markdown(f'<div class="terminal-box">{ascii_art}</div>', unsafe_allow_html=True)
         
-        st.success("ACCESS GRANTED: Buon Natale, Locandieri!")
+        st.success("SUCCESS: Buon Natale, Locandieri!")
 
         img_path = find_file("foto.png")
         if img_path:
             st.image(img_path, use_container_width=True)
         
-        st.markdown('<p class="log-text">root@cactus_server:~# _</p>', unsafe_allow_html=True)
+        st.markdown('<div class="log-text">root@cactus_server:~# _</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
