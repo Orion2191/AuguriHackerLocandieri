@@ -5,7 +5,7 @@ import base64
 import streamlit.components.v1 as components
 
 # Configurazione Pagina
-st.set_page_config(page_title="LOCANDIERI_BREACH_2025", page_icon="💀", layout="centered")
+st.set_page_config(page_title="BREACH_2025", page_icon="💀", layout="centered")
 
 # --- STILE CSS (Terminale, Pioggia di Bit e Invisibilità Audio) ---
 st.markdown("""
@@ -94,7 +94,7 @@ def main():
         st.session_state.authorized = False
 
     if not st.session_state.authorized:
-        st.markdown('<p class="log-text">SYSTEM: LOCANDIERI_SERVER<br>DATE: 25-12-2025<br>STATUS: ENCRYPTED</p>', unsafe_allow_html=True)
+        st.markdown('<p class="log-text">SYSTEM: CACTUS_SERVER<br>DATE: 25-12-2025<br>STATUS: ENCRYPTED</p>', unsafe_allow_html=True)
         if st.button("RUN EXPLOIT: DECRYPT_AUGURI.SH"):
             st.session_state.authorized = True
             st.rerun()
@@ -162,7 +162,8 @@ def main():
             # use_container_width assicura che l'immagine si adatti allo schermo
             st.image(img_path, use_container_width=True)
         
-        st.markdown('<p class="log-text">root@locandieri_server:~# _</p>', unsafe_allow_html=True)
+        st.markdown('<p class="log-text">root@cactus_server:~# _</p>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
+
