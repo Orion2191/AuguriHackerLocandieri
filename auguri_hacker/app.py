@@ -7,36 +7,32 @@ import streamlit.components.v1 as components
 # 1. Configurazione Pagina
 st.set_page_config(page_title="BREACHMAS_2025", page_icon="💀", layout="wide")
 
-# 2. CSS "NUCLEAR" - Colpisce specificamente i badge di Streamlit Cloud
+# 2. CSS AGGRESSIVO: Nasconde branding e prepara il terreno per la pioggia
 st.markdown("""
     <style>
     /* Sfondo Nero Totale */
-    .stApp { background-color: #000000; overflow-x: hidden; }
+    .stApp { background-color: #000000; overflow: hidden; }
     
-    /* HIDE TUTTO IL BRANDING (Mobile & Desktop) */
-    header, footer, .stAppDeployButton, #MainMenu {
+    /* NASCONDE OGNI TRACCIA DI STREAMLIT CLOUD (Created by, Hosted by, ecc.) */
+    header, footer, .stAppDeployButton, #MainMenu, .stViewerBadge, 
+    #streamlit_share_connect_button, [data-testid="stStatusWidget"],
+    [data-testid="stHeader"], [data-testid="stToolbar"], [data-testid="stDecoration"] {
         display: none !important;
         visibility: hidden !important;
     }
 
-    /* COLPIAMO I SELETTORI SPECIFICI DI STREAMLIT CLOUD */
-    [data-testid="stHeader"], 
-    [data-testid="stToolbar"], 
-    [data-testid="stDecoration"],
-    [data-testid="stStatusWidget"],
-    .st-emotion-cache-10trblm, /* Selettore generico per il footer */
-    .stViewerBadge,            /* Il badge 'Hosted with Streamlit' */
-    #streamlit_share_connect_button {
-        display: none !important;
-        visibility: hidden !important;
+    /* Forza l'iframe della pioggia a stare sullo sfondo */
+    iframe[title="streamlit.components.v1.html"] {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        border: none;
     }
 
-    /* Rimuove la barra in alto e il padding */
-    .block-container { 
-        padding-top: 0rem !important; 
-        padding-bottom: 0rem !important; 
-        max-width: 100% !important;
-    }
+    .block-container { padding-top: 1rem !important; max-width: 100% !important; }
 
     /* LOG: Grandi e nitidi */
     .log-text {
@@ -46,10 +42,9 @@ st.markdown("""
         line-height: 1.5 !important;
         text-shadow: 0 0 5px #00FF41;
         margin-bottom: 10px !important;
-        display: block;
     }
 
-    /* Nasconde player audio ma lo tiene attivo */
+    /* Nasconde player audio */
     div[data-testid="stAudio"] { position: fixed; bottom: -100px; opacity: 0; }
     </style>
     """, unsafe_allow_html=True)
@@ -71,22 +66,26 @@ def play_audio_hidden(b64_string):
         audio_html = f'<audio autoplay="true" style="display:none;"><source src="data:audio/mp3;base64,{b64_string}" type="audio/mp3"></audio>'
         components.html(audio_html, height=0, width=0)
 
-# RIPRISTINO DELLA PIOGGIA ORIGINALE (0, 1, X, M, A, S)
+# FUNZIONE PIOGGIA: Corretta per essere visibile come sfondo
 def matrix_rain_js():
     js_code = """
-    <canvas id="matrix" style="position: fixed; top: 0; left: 0; z-index: 0; width: 100vw; height: 100vh; opacity: 0.5;"></canvas>
+    <html>
+    <body style="margin: 0; padding: 0; background-color: transparent; overflow: hidden;">
+    <canvas id="matrix"></canvas>
     <script>
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    
     const chars = "010101XMAS";
-    const fontSize = 16;
+    const fontSize = 18;
     const columns = canvas.width / fontSize;
     const drops = [];
     for (let i = 0; i < columns; i++) drops[i] = 1;
+
     function draw() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         for (let i = 0; i < drops.length; i++) {
             const text = chars.charAt(Math.floor(Math.random() * chars.length));
@@ -97,16 +96,23 @@ def matrix_rain_js():
             drops[i]++;
         }
     }
-    setInterval(draw, 33);
+    setInterval(draw, 35);
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
     </script>
+    </body>
+    </html>
     """
-    components.html(js_code, height=0)
+    # Usiamo un'altezza minima per l'iframe, ma il CSS lo espanderà a tutto schermo
+    components.html(js_code, height=1)
 
 def main():
     if 'authorized' not in st.session_state: st.session_state.authorized = False
 
     if not st.session_state.authorized:
-        st.markdown('<div class="log-text">ID: CACTUS_SERVER<br>SECURITY: CRITICAL<br>STATUS: ENCRYPTED</div>', unsafe_allow_html=True)
+        st.markdown('<div class="log-text">SYSTEM: CACTUS_SERVER<br>DATE: 25-12-2025<br>STATUS: ENCRYPTED</div>', unsafe_allow_html=True)
         if st.button("RUN EXPLOIT"):
             st.session_state.authorized = True
             st.rerun()
@@ -131,21 +137,22 @@ def main():
         for i, (text, delay) in enumerate(steps):
             full_log += text + "<br>"
             log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
+            # Pre-carica la musica rock
             if i == 4: rock_b64 = get_audio_b64(find_file("musica.mp3"))
             time.sleep(delay)
 
         # --- AZIONE FINALE ---
         play_audio_hidden(rock_b64)
-        matrix_rain_js()
+        matrix_rain_js() # Parte la pioggia 010101XMAS
 
-        # Visualizza l'immagine dell'ASCII (ascii.png)
+        # Visualizza ascii.png
         ascii_img_path = find_file("ascii.png")
         if ascii_img_path:
             st.image(ascii_img_path, use_container_width=True)
         
         st.success("SUCCESS: Buon Natale, Locandieri!")
 
-        # Visualizza la foto finale (foto.png)
+        # Visualizza foto.png
         foto_path = find_file("foto.png")
         if foto_path:
             st.image(foto_path, use_container_width=True)
@@ -154,4 +161,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
