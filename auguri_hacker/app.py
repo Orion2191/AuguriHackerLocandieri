@@ -13,14 +13,13 @@ st.markdown("""
     <style>
     .stApp { background-color: #000000; overflow-x: hidden; }
     header, footer, #MainMenu {visibility: hidden;}
-    
     .block-container { padding-top: 2rem !important; }
 
     /* LOG: Sempre grandi e leggibili */
     .log-text {
         color: #00FF41 !important;
         font-family: 'Courier New', Courier, monospace !important;
-        font-size: 20px !important; 
+        font-size: 22px !important; 
         line-height: 1.5 !important;
         text-shadow: 0 0 5px #00FF41;
         margin-bottom: 10px !important;
@@ -79,11 +78,30 @@ def matrix_rain_js():
     """
     components.html(js_code, height=0)
 
+# FUNZIONE PER TRASFORMARE ASCII IN IMMAGINE PNG
+def render_ascii_to_image(text):
+    # Crea un'immagine nera temporanea per calcolare le dimensioni
+    lines = text.split('\n')
+    width = max(len(line) for line in lines) * 10
+    height = len(lines) * 18
+    img = Image.new('RGB', (width, height), color=(0, 0, 0))
+    d = ImageDraw.Draw(img)
+    
+    # Usa un font monospace standard del sistema
+    try:
+        font = ImageFont.load_default()
+    except:
+        font = None
+        
+    # Disegna il testo in verde neon
+    d.text((10, 10), text, fill=(0, 255, 65), font=font)
+    return img
+
 def main():
     if 'authorized' not in st.session_state: st.session_state.authorized = False
 
     if not st.session_state.authorized:
-        st.markdown('<div class="log-text">SYSTEM: CACTUS_SERVER<br>DATE: 25-12-2025<br>STATUS: ENCRYPTED</div>', unsafe_allow_html=True)
+        st.markdown('<div class="log-text">ID: CACTUS_SERVER<br>SECURITY: CRITICAL<br>STATUS: ENCRYPTED</div>', unsafe_allow_html=True)
         if st.button("RUN EXPLOIT"):
             st.session_state.authorized = True
             st.rerun()
@@ -115,10 +133,8 @@ def main():
         play_audio_hidden(rock_b64)
         matrix_rain_js()
 
-        # LA SCRITTA ASCII (AUGURI LOCANDIERI!)
-        # Per evitare che si distrugga, la mettiamo in un blocco preformattato 
-        # dentro un DIV che forziamo a non andare mai a capo.
-        ascii_art = r"""
+        # TESTO ASCII
+        ascii_text = r"""
  █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗██████╗ ██╗
 ██╔══██╗██║   ██║██╔════╝ ██║   ██║██╔══██╗██║
 ███████║██║   ██║██║  ███╗██║   ██║██████╔╝██║
@@ -134,21 +150,12 @@ def main():
 ╚══════╝ ╚═════╝  ╚═════╝  ╚═╝  ╚═╝ ╚═╝  ╚═══╝╚═════╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝
         """
         
-        # Tecnica finale: Usiamo un tag <pre> con font-size calcolato in VW (Viewport Width)
-        # 1.3vw assicura che 75 caratteri stiano in larghezza su ogni schermo.
-        st.markdown(f"""
-            <div style="border: 1px solid #00FF41; padding: 10px; background: rgba(0,0,0,0.9); margin-bottom: 20px;">
-                <pre style="color: #00FF41; font-family: 'Courier New', monospace; font-size: 1.3vw; line-height: 1.1; white-space: pre; overflow: visible;">{ascii_art}</pre>
-            </div>
-            <style>
-            @media screen and (max-width: 600px) {{
-                pre {{ font-size: 1.6vw !important; }}
-            }}
-            </style>
-            """, unsafe_allow_html=True)
+        # MOSTRA ASCII COME IMMAGINE (Indistruttibile)
+        st.image(render_ascii_to_image(ascii_text), use_container_width=True)
         
         st.success("SUCCESS: Buon Natale, Locandieri!")
 
+        # Immagine reale
         img_path = find_file("foto.png")
         if img_path:
             st.image(img_path, use_container_width=True)
