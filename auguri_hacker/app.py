@@ -7,9 +7,10 @@ import streamlit.components.v1 as components
 # Configurazione Pagina
 st.set_page_config(page_title="BREACH_2025", page_icon="💀", layout="centered")
 
-# --- STILE CSS (Terminale, Pioggia di Bit e Invisibilità Audio) ---
+# --- CSS RESPONSIVE E LOOK TERMINALE ---
 st.markdown("""
     <style>
+    /* Sfondo e scroll */
     .stApp { background-color: #000000; overflow-x: hidden; }
     header, footer, #MainMenu {visibility: hidden;}
 
@@ -22,20 +23,31 @@ st.markdown("""
         z-index: 100;
     }
 
+    /* BOX ASCII RESPONSIVA */
     .terminal-box {
         color: #00FF41;
         font-family: 'Courier New', Courier, monospace !important;
-        white-space: pre !important;
+        white-space: pre !important; /* Impedisce l'andata a capo automatica */
         border: 1px solid #00FF41;
         padding: 10px;
         background: rgba(0,0,0,0.9);
         position: relative;
         z-index: 100;
-        /* Ottimizzazione per non far uscire il testo dai bordi */
-        font-size: 8px !important; 
-        line-height: 1.1 !important;
-        overflow-x: auto;
+        
+        /* TRUCCO PER IL RIDIMENSIONAMENTO AUTOMATICO */
+        /* 1.2vw significa che la dimensione dipende dalla larghezza dello schermo */
+        font-size: 1.15vw !important; 
+        line-height: 1.2 !important;
         width: 100%;
+        text-align: left;
+    }
+
+    /* Media query per schermi molto piccoli (Smartphone) */
+    @media screen and (max-width: 600px) {
+        .terminal-box {
+            font-size: 1.25vw !important; /* Leggermente più grande su mobile per leggibilità */
+            padding: 5px;
+        }
     }
 
     /* Animazione Matrix Natalizia */
@@ -95,7 +107,7 @@ def main():
 
     if not st.session_state.authorized:
         st.markdown('<p class="log-text">SYSTEM: CACTUS_SERVER<br>DATE: 25-12-2025<br>STATUS: ENCRYPTED</p>', unsafe_allow_html=True)
-        if st.button("RUN EXPLOIT: DECRYPT_AUGURI.SH"):
+        if st.button("RUN EXPLOIT"):
             st.session_state.authorized = True
             st.rerun()
     else:
@@ -135,7 +147,7 @@ def main():
         play_audio_hidden(rock_b64)
         start_cyber_rain()
 
-        # ASCII ART coordinata (AUGURI + LOCANDIERI!)
+        # ASCII ART (AUGURI + LOCANDIERI!)
         ascii_art = r"""
  █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗██████╗ ██╗
 ██╔══██╗██║   ██║██╔════╝ ██║   ██║██╔══██╗██║
@@ -152,18 +164,16 @@ def main():
 ╚══════╝ ╚═════╝  ╚═════╝  ╚═╝  ╚═╝ ╚═╝  ╚═══╝╚═════╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝
         """
         
-        # Visualizzazione ASCII con font scalabile per smartphone
+        # La box ora usa le classi CSS responsive definite sopra
         st.markdown(f'<div class="terminal-box">{ascii_art}</div>', unsafe_allow_html=True)
         
         st.success("ACCESS GRANTED: Buon Natale, Locandieri!")
 
         img_path = find_file("foto.png")
         if img_path:
-            # use_container_width assicura che l'immagine si adatti allo schermo
             st.image(img_path, use_container_width=True)
         
         st.markdown('<p class="log-text">root@cactus_server:~# _</p>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
-
