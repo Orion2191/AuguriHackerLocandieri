@@ -7,60 +7,50 @@ import streamlit.components.v1 as components
 # 1. Configurazione Pagina
 st.set_page_config(page_title="BREACHMAS_2025", page_icon="💀", layout="wide")
 
-# 2. CSS Avanzato per Mobile e Rimozione Spazi
+# 2. CSS: Log Grandi, Matrix Rain e Box ASCII con scroll di sicurezza
 st.markdown("""
     <style>
     .stApp { background-color: #000000; overflow-x: hidden; }
     header, footer, #MainMenu {visibility: hidden;}
     
-    /* Riduce gli spazi tra i blocchi di Streamlit */
-    .block-container { padding-top: 2rem !important; padding-bottom: 0rem !important; }
-    div.stVerticalBlock > div { padding: 0px !important; margin: 0px !important; }
+    .block-container { padding-top: 2rem !important; }
 
-    /* LOG: Grandi e nitidi */
+    /* LOG: Grandi e nitidi su ogni dispositivo */
     .log-text {
         color: #00FF41 !important;
         font-family: 'Courier New', Courier, monospace !important;
         font-size: 20px !important; 
-        line-height: 1.4 !important;
-        margin-bottom: 5px !important;
+        line-height: 1.5 !important;
+        margin-bottom: 10px !important;
+        text-shadow: 0 0 5px #00FF41;
     }
 
-    /* ASCII BOX: Infrangibile e Responsive */
+    /* ASCII BOX: Se non ci sta nel telefono, permette lo scroll laterale */
     .terminal-box {
         color: #00FF41 !important;
         font-family: 'Courier New', Courier, monospace !important;
         white-space: pre !important;
         border: 1px solid #00FF41;
-        padding: 10px;
+        padding: 15px;
         background: rgba(0,0,0,0.9);
-        display: inline-block;
-        /* Dimensione font proporzionale alla larghezza schermo */
-        font-size: 1.6vw !important; 
+        margin-bottom: 20px;
+        
+        /* Font size bilanciato */
+        font-size: 14px !important; 
         line-height: 1.1 !important;
+        
+        /* SCROLL DI SICUREZZA: Fondamentale per Mobile */
+        overflow-x: auto !important;
+        display: block;
         width: 100%;
-        overflow: hidden;
     }
 
     @media screen and (max-width: 600px) {
-        .terminal-box { font-size: 2.1vw !important; padding: 5px; }
         .log-text { font-size: 16px !important; }
+        .terminal-box { font-size: 10px !important; }
     }
 
-    /* Matrix Rain */
-    .matrix-rain {
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        pointer-events: none; z-index: 1;
-    }
-    .bit {
-        position: absolute; top: -30px;
-        font-family: monospace; font-size: 20px;
-        animation: fall linear infinite;
-    }
-    @keyframes fall { to { transform: translateY(110vh); } }
-
-    /* Nasconde player */
+    /* Nasconde player audio */
     div[data-testid="stAudio"] { position: fixed; bottom: -100px; }
     </style>
     """, unsafe_allow_html=True)
@@ -82,57 +72,74 @@ def play_audio_hidden(b64_string):
         audio_html = f'<audio autoplay="true" style="display:none;"><source src="data:audio/mp3;base64,{b64_string}" type="audio/mp3"></audio>'
         components.html(audio_html, height=0, width=0)
 
-def main():
-    if 'auth' not in st.session_state: st.session_state.auth = False
+# RIPRISTINO MATRIX RAIN ORIGINALE (JS)
+def matrix_rain_js():
+    js_code = """
+    <canvas id="matrix" style="position: fixed; top: 0; left: 0; z-index: 0; width: 100vw; height: 100vh; opacity: 0.5;"></canvas>
+    <script>
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const chars = "010101XMAS";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+    for (let i = 0; i < columns; i++) drops[i] = 1;
+    function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars.charAt(Math.floor(Math.random() * chars.length));
+            ctx.fillStyle = (Math.random() > 0.5) ? '#00FF41' : '#FF0000';
+            ctx.font = fontSize + 'px monospace';
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
+    }
+    setInterval(draw, 33);
+    </script>
+    """
+    components.html(js_code, height=0)
 
-    if not st.session_state.auth:
-        st.markdown('<div class="log-text">ID: CACTUS_SERVER<br>STATUS: ENCRYPTED</div>', unsafe_allow_html=True)
+def main():
+    if 'authorized' not in st.session_state: st.session_state.authorized = False
+
+    if not st.session_state.authorized:
+        st.markdown('<div class="log-text">ID: CACTUS_SERVER<br>SECURITY: HIGH<br>STATUS: ENCRYPTED</div>', unsafe_allow_html=True)
         if st.button("RUN EXPLOIT"):
-            st.session_state.auth = True
+            st.session_state.authorized = True
             st.rerun()
     else:
-        # --- START: Caricamento simultaneo ---
-        audio_placeholder = st.empty()
-        # Carichiamo subito il modem
+        # 1. MODEM (Sincronizzato 26s)
         modem_b64 = get_audio_b64(find_file("modem.mp3"))
         play_audio_hidden(modem_b64)
-        
+
         log_placeholder = st.empty()
         full_log = ""
         
-        # Elenco log sincronizzati
+        # Log sincronizzati per 26 secondi
         steps = [
-            ("> Dialing 01010011...", 2.0),
+            ("> Dialing 01010011...", 2.5),
             ("> Carrier detected...", 1.5),
-            ("> Handshake: V.90...", 6.0),
+            ("> Handshake: V.90 Protocol...", 6.0),
             ("> Bypassing IDS/IPS...", 4.5),
             ("> Escalating to root...", 3.5),
-            ("> Decrypting buffer...", 3.0),
+            ("> Accessing secret_payload...", 3.0),
+            ("> Decrypting visual data...", 5.0),
         ]
 
-        # Esecuzione log
         for i, (text, delay) in enumerate(steps):
             full_log += text + "<br>"
             log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
-            # A metà dei log, iniziamo a caricare la musica rock in memoria (background)
-            if i == 3: 
-                rock_b64 = get_audio_b64(find_file("musica.mp3"))
+            # Pre-carica la musica rock durante l'attesa per evitare lag
+            if i == 4: rock_b64 = get_audio_b64(find_file("musica.mp3"))
             time.sleep(delay)
-
-        # Ultimo passo senza ritardo perché il file è già pronto
-        full_log += "> Executing payload...<br>"
-        log_placeholder.markdown(f'<div class="log-text">{full_log}</div>', unsafe_allow_html=True)
-        time.sleep(1.5)
 
         # --- AZIONE FINALE ---
         play_audio_hidden(rock_b64)
-        
-        # Matrix Rain
-        cols = 30
-        rain_html = '<div class="matrix-rain">'
-        for i in range(cols):
-            rain_html += f'<div class="bit" style="left:{i*3.3}%; color:{"#00FF41" if i%2==0 else "#FF0000"}; animation-duration:{2+i%3}s; animation-delay:{i%2}s;">{os.urandom(1).hex()[0]}</div>'
-        st.markdown(rain_html + '</div>', unsafe_allow_html=True)
+        matrix_rain_js() # Pioggia originale ripristinata
 
         # ASCII ART coordinata
         ascii_art = r"""
@@ -143,18 +150,18 @@ def main():
 ██║  ██║╚██████╔╝╚██████╔╝╚██████╔╝██║  ██║██║
 ╚═╝  ╚═╝ ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝
 
-██╗      ██████╗  ██████╗  █████╗  ███╗   ██╗██████╗ ██╗███████╗██████╗ ██╗
-██║     ██╔═══██╗██╔════╝ ██╔══██╗ ████╗  ██║██╔══██╗██║██╔════╝██╔══██╗██║
-██║     ██║   ██║██║      ███████║ ██╔██╗ ██║██║  ██║██║█████╗  ██████╔╝██║
-██║     ██║   ██║██║      ██╔══██║ ██║╚██╗██║██║  ██║██║██╔══╝  ██╔══██╗██║
-███████╗╚██████╔╝╚██████╗ ██║  ██║ ██║ ╚████║██████╔╝██║███████╗██║  ██║██║
-╚══════╝ ╚═════╝  ╚═════╝  ╚═╝  ╚═╝ ╚═╝  ╚═══╝╚═════╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝"""
+██╗      ██████╗  ██████╗  █████╗  ███╗   ██╗██████╗ ██╗███████╗██████╗ ██╗██╗
+██║     ██╔═══██╗██╔════╝ ██╔══██╗ ████╗  ██║██╔══██╗██║██╔════╝██╔══██╗██║██║
+██║     ██║   ██║██║      ███████║ ██╔██╗ ██║██║  ██║██║█████╗  ██████╔╝██║██║
+██║     ██║   ██║██║      ██╔══██║ ██║╚██╗██║██║  ██║██║██╔══╝  ██╔══██╗██║╚═╝
+███████╗╚██████╔╝╚██████╗ ██║  ██║ ██║ ╚████║██████╔╝██║███████╗██║  ██║██║██╗
+╚══════╝ ╚═════╝  ╚═════╝  ╚═╝  ╚═╝ ╚═╝  ╚═══╝╚═════╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝"""
         
         st.markdown(f'<div class="terminal-box">{ascii_art}</div>', unsafe_allow_html=True)
         
         st.success("SUCCESS: Buon Natale, Locandieri!")
 
-        # Immagine senza spazi
+        # Immagine
         img_path = find_file("foto.png")
         if img_path:
             st.image(img_path, use_container_width=True)
